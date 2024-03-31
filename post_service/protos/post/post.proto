@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package post;
+
+service PostService {
+  rpc Create(CreateReq) returns (Post);
+  rpc GetPost(GetReq) returns (Post);
+  rpc SearchPost(SearchReq) returns (PostsRes);
+  rpc UpdatePost(UpdatePostReq)returns (Post);
+  rpc DeletePost(DeletePostReq)returns (DeletePostRes);
+  rpc PostClickLike (ClickReq)returns(PostLike);
+  rpc PostClickDisLike (ClickReq)returns(PostLike);
+  rpc Views(ViewReq)returns(ViewRes);
+}
+
+message ViewReq{
+  string post_id = 1;
+  string user_id = 2;
+}
+
+message ViewRes{}
+
+message ClickReq{
+  string post_id = 1;
+  string user_id = 2;
+}
+
+message PostLike{
+  bool like = 1;
+}
+
+message DeletePostReq{
+  string id = 1;
+}
+
+message DeletePostRes{
+  bool status = 1;
+}
+
+message UpdatePostReq{
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string category = 4;
+}
+
+message SearchReq{
+  string field = 1;
+  string value = 2;
+  int64 page = 4;
+  int64 limit = 5;
+}
+
+message CreateReq{
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string user_id = 4;
+  string category = 5;
+}
+
+message GetByOwnerIdReq{
+  string owner_id = 1;
+}
+
+message PostsRes{
+  repeated Post posts = 1;
+}
+
+message GetReq{
+  string post_id = 1;
+}
+
+message Post {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string user_id = 4;
+  string category = 5;
+  int64 likes = 6;
+  int64 dislikes = 7;
+  int64 views  = 12;
+  string created_at = 8;
+  string updated_at = 9;
+  string deleted_at = 10;
+  repeated Comment comments = 11;
+}
+
+message Comment{
+  string comment_id = 1;
+  string post_id = 2;
+  string user_id = 3;
+  string content = 4;
+  int64 likes = 5;
+  int64 dislikes = 6;
+}
+
+
+

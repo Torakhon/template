@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+package users;
+
+service UserService{
+  rpc CreateUser(CreateUserReq) returns (User);
+  rpc GetUser(GetUserReq) returns (User);
+  rpc UpdateUser(UpdateUserReq) returns (User);
+  rpc DeleteUser(DeleteUserReq)returns (DeleteUserRes);
+  rpc GetAllUsers(GetAllUsersReq) returns (GetAllUsersRes);
+  rpc CheckUniques(CheckUniqReq) returns (CheckUniqRes);
+  rpc Register(CreateUserReq) returns (RegisterRes);
+  rpc Login (LoginReq) returns (LoginRes);
+  rpc UpdateRole(UpdateRoleReq) returns (UpdateRoleRes);
+  rpc UpdateEmail(UpdateEmailReq)returns (UpdateEmailRes);
+}
+
+message UpdateEmailReq{
+  string id = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message UpdateEmailRes{
+  bool status = 1;
+}
+
+message Post {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string user_id = 4;
+  string category = 5;
+  int64 likes = 6;
+  int64 dislikes = 7;
+  int64 views  = 12;
+  string created_at = 8;
+  string updated_at = 9;
+  string deleted_at = 10;
+  repeated Comment comments = 11;
+}
+
+message Comment{
+  string comment_id = 1;
+  string post_id = 2;
+  string user_id = 3;
+  string content = 4;
+  int64 likes = 5;
+  int64 dislikes = 6;
+}
+
+message User{
+  string id = 1;
+  string user_name = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string email = 5;
+  string password = 6;
+  string role = 7;
+  string bio = 8;
+  string web_site = 9;
+  string created_at = 10;
+  string updated_at = 11;
+  string deleted_at = 12;
+  repeated Post posts = 13;
+}
+
+message CreateUserReq{
+  string id = 1;
+  string user_name = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string email = 5;
+  string password = 6;
+  string role = 7;
+  string bio = 8;
+  string web_site = 9;
+}
+
+message GetUserReq{
+  string field  = 1;
+  string value = 2;
+}
+
+message UpdateUserReq{
+  string id = 1;
+  string user_name = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string password = 5;
+  string role = 6;
+  string bio = 7;
+  string web_site = 8;
+}
+
+message DeleteUserReq{
+  string value = 1;
+  string field = 2;
+}
+
+message DeleteUserRes{
+  bool status = 1;
+}
+
+message GetAllUsersReq{
+  int64 limit = 1;
+  int64 page = 2;
+}
+
+message GetAllUsersRes{
+  repeated User users = 1;
+}
+
+message CheckUniqReq{
+  string field = 1;
+  string value = 2;
+}
+
+message CheckUniqRes{
+  int32 code = 1;
+}
+
+message RegisterRes{
+  bool status = 1;
+}
+
+message LoginReq{
+  string email = 1;
+}
+
+message LoginRes{
+  string id = 1;
+  string email = 2;
+  string password = 3;
+  string role = 4;
+}
+
+message UpdateRoleReq{
+  string id = 1;
+  string  newRole = 2;
+}
+
+message UpdateRoleRes{
+  bool stats = 1;
+}

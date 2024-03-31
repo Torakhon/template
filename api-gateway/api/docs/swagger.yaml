@@ -1,0 +1,539 @@
+definitions:
+  models.AddRole:
+    properties:
+      method:
+        type: string
+      role:
+        type: string
+      url:
+        type: string
+    type: object
+  models.AllUsers:
+    properties:
+      email:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  models.Authorization:
+    properties:
+      status:
+        type: boolean
+      token:
+        type: string
+    type: object
+  models.AuthorizationReq:
+    properties:
+      code:
+        type: integer
+      email:
+        type: string
+    type: object
+  models.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  models.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.Product:
+    properties:
+      amount:
+        type: integer
+      id:
+        type: string
+      name:
+        type: string
+      prays:
+        type: integer
+    type: object
+  models.RegisterModelReq:
+    properties:
+      email:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  models.RegisterModelRes:
+    properties:
+      status:
+        type: boolean
+    type: object
+  models.RegisterRes:
+    properties:
+      status:
+        type: string
+      token:
+        type: string
+    type: object
+  models.StandardErrorModel:
+    properties:
+      error:
+        $ref: '#/definitions/models.Error'
+    type: object
+  models.UpdateRolReq:
+    properties:
+      id:
+        type: string
+      role:
+        type: string
+    type: object
+  models.UpdateRolRes:
+    properties:
+      status:
+        type: boolean
+    type: object
+  models.UpdateUserReq:
+    properties:
+      email:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  models.UpdateUserRes:
+    properties:
+      last_name:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      role:
+        type: string
+    type: object
+  models.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      role:
+        type: string
+    type: object
+  models.UsersReq:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+    type: object
+  models.UsersRes:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/models.AllUsers'
+        type: array
+    type: object
+host: localhost:9091
+info:
+  contact: {}
+  title: welcome to
+  version: "1.0"
+paths:
+  /v1/auth/Login/:
+    post:
+      consumes:
+      - application/json
+      description: Login - Api for registering users
+      parameters:
+      - description: Login Req
+        in: body
+        name: Login
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.RegisterRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      summary: Login
+      tags:
+      - Register
+  /v1/auth/authorization/:
+    post:
+      consumes:
+      - application/json
+      description: Authorization - Api for registering users
+      parameters:
+      - description: RegisterModelReq
+        in: body
+        name: Register
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuthorizationReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Authorization'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      summary: Authorization
+      tags:
+      - Register
+  /v1/auth/register/:
+    post:
+      consumes:
+      - application/json
+      description: Register - Api for registering users
+      parameters:
+      - description: RegisterModelReq
+        in: body
+        name: Register
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterModelReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.RegisterModelRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      summary: Register
+      tags:
+      - Register
+  /v1/suAdmin/{role}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user-role by id
+      parameters:
+      - description: role
+        in: path
+        name: role
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user-role by id
+      tags:
+      - Super Admin
+  /v1/suAdmin/add-user-role:
+    post:
+      consumes:
+      - application/json
+      description: Create new user-role
+      parameters:
+      - description: create
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddRole'
+      produces:
+      - application/json
+      responses:
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new user-role
+      tags:
+      - Super Admin
+  /v1/suAdmin/delete_user:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteUser
+      tags:
+      - Admin
+  /v1/suAdmin/roles:
+    get:
+      consumes:
+      - application/json
+      description: Get list of roles
+      produces:
+      - application/json
+      responses:
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of roles
+      tags:
+      - Super Admin
+  /v1/suAdmin/up_role:
+    post:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: Update role
+        in: body
+        name: UpdateRole
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateRolReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UpdateRolRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Role user
+      tags:
+      - Super Admin
+  /v1/user/{page}/{limit}:
+    post:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: Get All Users
+        in: body
+        name: GetAllUsers
+        required: true
+        schema:
+          $ref: '#/definitions/models.UsersReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UsersRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: GetAllUsers
+      tags:
+      - user
+  /v1/user/create_product:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create Product
+        in: body
+        name: CreateProduct
+        required: true
+        schema:
+          $ref: '#/definitions/models.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Product
+      tags:
+      - Product
+  /v1/user/get_product:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: GetProduct
+      tags:
+      - Product
+  /v1/user/info:
+    get:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: GetUser
+      tags:
+      - user
+  /v1/user/up_user:
+    post:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: Up User
+        in: body
+        name: UpUser
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UpdateUserRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: GetUser
+      tags:
+      - user
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
