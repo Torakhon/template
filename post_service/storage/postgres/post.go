@@ -65,7 +65,7 @@ func (p *PostRepo) SearchPost(ctx context.Context, req *pb.SearchReq) (*pb.Posts
 	offset := req.Limit * (req.Page - 1)
 	var posts pb.PostsRes
 	query := fmt.Sprintf(`SELECT id,title,content,user_id,category,likes,dislikes,views,created_at,updated_at FROM posts
-				WHERE %s = $1 LIMIT $2 OFFSET $3 and deleted_at IS NULL`, req.Field)
+				WHERE %s = $1  and deleted_at IS NULL LIMIT $2 OFFSET $3`, req.Field)
 
 	rows, err := p.db.Query(query, req.Value, req.Limit, offset)
 	if err != nil {
@@ -209,7 +209,6 @@ func (p *PostRepo) PostClickDisLike(ctx context.Context, req *pb.ClickReq) (*pb.
 		status = true
 		_, err = p.db.Exec(`UPDATE posts SET dislikes = dislikes +1 WHERE id = $1`, req.PostId)
 	}
-	fmt.Println(status)
 
 	_, err = p.db.Exec(`UPDATE post_like SET
 										status = $1 WHERE dislike = 'dislike' and post_id = $2 and user_id = $3 `, status, req.PostId, req.UserId)

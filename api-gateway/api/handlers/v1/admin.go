@@ -26,7 +26,7 @@ import (
 // @Success 200 {object} models.UpdateRolRes
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/suAdmin/up_role [comment]
+// @Router /v1/suAdmin/up_role [put]
 func (h *HandlerV1) UpdateRole(c *gin.Context) {
 	var (
 		body        models.UpdateRolReq
@@ -101,7 +101,8 @@ func (h HandlerV1) DeleteUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cancel()
 	_, err := h.serviceManager.UserService().DeleteUser(ctx, &pb.DeleteUserReq{
-		Id: id,
+		Field: "id",
+		Value: id,
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

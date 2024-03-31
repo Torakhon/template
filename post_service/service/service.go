@@ -62,21 +62,21 @@ func (p *PostService) Views(ctx context.Context, req *pb.ViewReq) (*pb.ViewRes, 
 //}
 //
 //func (p *PostService) GetPost(ctx context.Context, req *pb.GetReq) (*pb.Post, error) {
-//	post, err := p.storage.Post().GetPost(ctx, req)
+//	postModel, err := p.storage.Post().GetPost(ctx, req)
 //	if err != nil {
 //		return nil, err
 //	}
 //
 //	_, err = p.storage.Post().Views(ctx, &pb.ViewReq{
-//		PostId: post.Id,
-//		UserId: post.UserId,
+//		PostId: postModel.Id,
+//		UserId: postModel.UserId,
 //	})
 //	if err != nil {
 //		return nil, err
 //	}
 //
 //	comments, err := p.grpcClient.CommentService().GetCommentsByPostId(ctx, &commentPb.GetByPostIdReq{
-//		PostId: post.Id,
+//		PostId: postModel.Id,
 //	})
 //	if err != nil {
 //		return nil, err
@@ -91,10 +91,10 @@ func (p *PostService) Views(ctx context.Context, req *pb.ViewReq) (*pb.ViewRes, 
 //			Likes:     comment.Likes,
 //			Dislikes:  comment.Dislikes,
 //		}
-//		post.Comments = append(post.Comments, comm)
+//		postModel.Comments = append(postModel.Comments, comm)
 //	}
 //
-//	return post, nil
+//	return postModel, nil
 //}
 //
 //func (p *PostService) SearchPost(ctx context.Context, req *pb.SearchReq) (*pb.PostsRes, error) {
@@ -103,17 +103,17 @@ func (p *PostService) Views(ctx context.Context, req *pb.ViewReq) (*pb.ViewRes, 
 //		return nil, err
 //	}
 //
-//	for _, post := range posts.Posts {
+//	for _, postModel := range posts.Posts {
 //		comments, err := p.grpcClient.CommentService().GetCommentsByPostId(ctx, &commentPb.GetByPostIdReq{
-//			PostId: post.Id,
+//			PostId: postModel.Id,
 //		})
 //		if err != nil {
 //			return nil, err
 //		}
 //
 //		_, err = p.storage.Post().Views(ctx, &pb.ViewReq{
-//			PostId: post.Id,
-//			UserId: post.UserId,
+//			PostId: postModel.Id,
+//			UserId: postModel.UserId,
 //		})
 //		if err != nil {
 //			return nil, err

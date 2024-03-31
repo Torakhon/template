@@ -7,7 +7,6 @@ import (
 	v1 "api-gateway/api/handlers/v1"
 	"api-gateway/config"
 	"api-gateway/pkg/logger"
-	"api-gateway/queue/kafka/producer"
 	"api-gateway/services"
 	"fmt"
 	"github.com/casbin/casbin/v2"
@@ -26,7 +25,7 @@ type Option struct {
 	Logger         logger.Logger
 	Enforcer       *casbin.Enforcer
 	ServiceManager services.IServiceManager
-	Writer         producer.KafkaProducer
+	//Writer         producer.KafkaProducer
 }
 
 // New ...
@@ -47,7 +46,7 @@ func New(option Option) *gin.Engine {
 		ServiceManager: option.ServiceManager,
 		Enforcer:       option.Enforcer,
 		Cfg:            option.Conf,
-		Writer:         option.Writer,
+		//Writer:         option.Writer,
 	})
 
 	policies := [][]string{}
@@ -78,19 +77,30 @@ func New(option Option) *gin.Engine {
 	auth.POST("/Login", handlerV1.Login)
 
 	//suAdmin
-	suAdmin := api.Group("suAdmin")
-	suAdmin.GET("/roles", option.ListRoles())
-	suAdmin.DELETE("/:role", option.DeleteRole())
-	suAdmin.POST("/add-user-role", option.AddPolicy())
-	suAdmin.POST("/up_role", handlerV1.UpdateRole)
+	//suAdmin := api.Group("suAdmin")
+	//suAdmin.GET("/roles", option.ListRoles())
+	//suAdmin.DELETE("/:role", option.DeleteRole())
+	//suAdmin.POST("/add-user-role", option.AddPolicy())
+	//suAdmin.POST("/up_role", handlerV1.UpdateRole)
 
 	//user
 	user := api.Group("/user")
-	user.GET("/info", handlerV1.GetUser)
-	user.POST("up_user", handlerV1.UpUser)
-	user.POST("/{page}/{limit}", handlerV1.GetAllUsers)
-	user.GET("/get_product", handlerV1.GetProduct)
-	user.POST("/create_product", handlerV1.CreateProduct)
+	user.GET("/get_user", handlerV1.GetUser)
+	user.GET("/get_user_posts", handlerV1.GetUserWithPosts)
+	user.PUT("/up_user", handlerV1.UpdateUser)
+	user.GET("/get_all_users", handlerV1.GetAllUsers)
+
+	//post
+	post := api.Group("/post")
+	post.POST("/create", handlerV1.CreatePost)
+	post.GET("/get_post", handlerV1.GetPost)
+	post.POST("/search_post", handlerV1.SearchPost)
+	post.GET("/get_by_owner_id", handlerV1.GetPostByOwnerId)
+	post.GET("/get_with_comment", handlerV1.GetPostWithComment)
+	post.PUT("/update_post", handlerV1.UpdatePost)
+	post.DELETE("/delete_post", handlerV1.DeletePost)
+	post.POST("/click_like", handlerV1.ClickLike)
+	post.POST("/click_dislike", handlerV1.ClickDisLike)
 
 	url := ginSwagger.URL("swagger/doc.json")
 	api.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

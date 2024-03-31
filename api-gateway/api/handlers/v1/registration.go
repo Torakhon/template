@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/cast"
 	"google.golang.org/protobuf/encoding/protojson"
 	"log"
@@ -30,7 +31,7 @@ import (
 // @Success 200 {object} models.RegisterModelRes
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/auth/register/ [comment]
+// @Router /v1/auth/register/ [post]
 func (h *HandlerV1) Register(c *gin.Context) {
 	var (
 		body        models.RegisterModelReq
@@ -40,7 +41,7 @@ func (h *HandlerV1) Register(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&body)
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "redisdb_ali:6379",
+		Addr: "localhost:6379",
 	})
 
 	if err != nil {
@@ -111,7 +112,7 @@ func (h *HandlerV1) Register(c *gin.Context) {
 // @Failure 200 {object} models.Authorization
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/auth/authorization/ [comment]
+// @Router /v1/auth/authorization/ [post]
 func (h *HandlerV1) Authorization(c *gin.Context) {
 	var (
 		body        models.AuthorizationReq
@@ -123,7 +124,7 @@ func (h *HandlerV1) Authorization(c *gin.Context) {
 	err := c.ShouldBindJSON(&body)
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "redisdb_ali:6379",
+		Addr: "localhost:6379",
 	})
 	defer func(rdb *redis.Client) {
 		err := rdb.Close()
@@ -181,14 +182,16 @@ func (h *HandlerV1) Authorization(c *gin.Context) {
 			return
 		}
 		fmt.Println(regis)
-		r, err := h.serviceManager.UserService().Register(ctx, &pbu.CreateUserReq{
-			Name:        regis.Name,
-			LastName:    regis.LastName,
-			Email:       regis.Email,
-			Id:          regis.Id,
-			Password:    hashPassword,
-			Role:        "user",
-			PhoneNumber: regis.PhoneNumber,
+		_, err = h.serviceManager.UserService().CreateUser(ctx, &pbu.CreateUserReq{
+			Id:        regis.Id,
+			UserName:  regis.UserName,
+			FirstName: regis.LastName,
+			LastName:  regis.LastName,
+			Email:     regis.Email,
+			Password:  hashPassword,
+			Role:      "user",
+			Bio:       regis.Bio,
+			WebSite:   regis.Website,
 		})
 
 		if err != nil {
@@ -197,7 +200,7 @@ func (h *HandlerV1) Authorization(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, &models.Authorization{
 			Token:  access,
-			Status: r.Status,
+			Status: true,
 		})
 	}
 }
@@ -212,7 +215,7 @@ func (h *HandlerV1) Authorization(c *gin.Context) {
 // @Success 200 {object} models.RegisterRes
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/auth/Login/ [comment]
+// @Router /v1/auth/Login/ [post]
 func (h *HandlerV1) Login(c *gin.Context) {
 	var (
 		body        models.LoginReq

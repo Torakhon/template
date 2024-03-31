@@ -45,28 +45,21 @@ definitions:
       password:
         type: string
     type: object
-  models.Product:
-    properties:
-      amount:
-        type: integer
-      id:
-        type: string
-      name:
-        type: string
-      prays:
-        type: integer
-    type: object
   models.RegisterModelReq:
     properties:
+      bio:
+        type: string
       email:
+        type: string
+      first_name:
         type: string
       last_name:
         type: string
-      name:
-        type: string
       password:
         type: string
-      phone_number:
+      user_name:
+        type: string
+      website:
         type: string
     type: object
   models.RegisterModelRes:
@@ -98,51 +91,58 @@ definitions:
       status:
         type: boolean
     type: object
-  models.UpdateUserReq:
+  models.UpdateUser:
     properties:
-      email:
+      bio:
+        type: string
+      first_name:
         type: string
       last_name:
         type: string
-      name:
-        type: string
       password:
         type: string
-      phone_number:
+      user_name:
+        type: string
+      website:
         type: string
     type: object
   models.UpdateUserRes:
     properties:
+      bio:
+        type: string
+      first_name:
+        type: string
       last_name:
         type: string
-      name:
+      password:
         type: string
-      phone_number:
+      token:
         type: string
-      role:
+      user_name:
+        type: string
+      website:
         type: string
     type: object
   models.User:
     properties:
+      bio:
+        type: string
       email:
         type: string
-      id:
+      first_name:
         type: string
       last_name:
         type: string
-      name:
-        type: string
-      phone_number:
-        type: string
+      posts:
+        items:
+          $ref: '#/definitions/postModel.Post'
+        type: array
       role:
         type: string
-    type: object
-  models.UsersReq:
-    properties:
-      limit:
-        type: integer
-      page:
-        type: integer
+      user_name:
+        type: string
+      website:
+        type: string
     type: object
   models.UsersRes:
     properties:
@@ -150,6 +150,74 @@ definitions:
         items:
           $ref: '#/definitions/models.AllUsers'
         type: array
+    type: object
+  postModel.CreateReq:
+    properties:
+      category:
+        type: string
+      content:
+        type: string
+      title:
+        type: string
+    type: object
+  postModel.Post:
+    properties:
+      category:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      dislikes:
+        type: integer
+      id:
+        type: string
+      likes:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+      views:
+        type: integer
+    type: object
+  postModel.Posts:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/postModel.Post'
+        type: array
+    type: object
+  postModel.SearchReq:
+    properties:
+      field:
+        type: string
+      limit:
+        type: integer
+      page:
+        type: integer
+      value:
+        type: string
+    type: object
+  postModel.Status:
+    properties:
+      '''status''':
+        type: boolean
+    type: object
+  postModel.UpdatePostReq:
+    properties:
+      category:
+        type: string
+      content:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
     type: object
 host: localhost:9091
 info:
@@ -247,6 +315,262 @@ paths:
       summary: Register
       tags:
       - Register
+  /v1/post/click_dislike:
+    post:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: post_id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postModel.Status'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: ClickDisLike
+      tags:
+      - post
+  /v1/post/click_like:
+    post:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: post_id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postModel.Status'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: ClickLike
+      tags:
+      - post
+  /v1/post/create:
+    post:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: create post
+        in: body
+        name: CreatePost
+        required: true
+        schema:
+          $ref: '#/definitions/postModel.CreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postModel.Post'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: CreatePost
+      tags:
+      - post
+  /v1/post/delete_post:
+    delete:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: post_id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postModel.Status'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: DeletePost
+      tags:
+      - post
+  /v1/post/get_by_owner_id:
+    get:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postModel.Posts'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: GetPostByOwnerId
+      tags:
+      - post
+  /v1/post/get_post:
+    get:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: post_id
+        in: query
+        name: post_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postModel.Post'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: GetPost
+      tags:
+      - post
+  /v1/post/search_post:
+    post:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: search post
+        in: body
+        name: SearchPost
+        required: true
+        schema:
+          $ref: '#/definitions/postModel.SearchReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postModel.SearchReq'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: SearchPost
+      tags:
+      - post
+  /v1/post/update_post:
+    put:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: update post
+        in: body
+        name: UpdatePost
+        required: true
+        schema:
+          $ref: '#/definitions/postModel.UpdatePostReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postModel.Post'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: UpdatePost
+      tags:
+      - post
   /v1/suAdmin/{role}:
     delete:
       consumes:
@@ -350,7 +674,7 @@ paths:
       tags:
       - Super Admin
   /v1/suAdmin/up_role:
-    post:
+    put:
       consumes:
       - application/json
       description: Viewing a single User by id
@@ -381,18 +705,22 @@ paths:
       summary: Update Role user
       tags:
       - Super Admin
-  /v1/user/{page}/{limit}:
-    post:
+  /v1/user/get_all_users:
+    get:
       consumes:
       - application/json
       description: Viewing a single User by id
       parameters:
-      - description: Get All Users
-        in: body
-        name: GetAllUsers
+      - description: Page number
+        in: query
+        name: page
         required: true
-        schema:
-          $ref: '#/definitions/models.UsersReq'
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -413,68 +741,7 @@ paths:
       summary: GetAllUsers
       tags:
       - user
-  /v1/user/create_product:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Create Product
-        in: body
-        name: CreateProduct
-        required: true
-        schema:
-          $ref: '#/definitions/models.Product'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Product'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      security:
-      - ApiKeyAuth: []
-      summary: Product
-      tags:
-      - Product
-  /v1/user/get_product:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: name
-        in: path
-        name: name
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Product'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      security:
-      - ApiKeyAuth: []
-      summary: GetProduct
-      tags:
-      - Product
-  /v1/user/info:
+  /v1/user/get_user:
     get:
       consumes:
       - application/json
@@ -499,8 +766,44 @@ paths:
       summary: GetUser
       tags:
       - user
+  /v1/user/get_user_posts:
+    get:
+      consumes:
+      - application/json
+      description: Viewing a single User by id
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      security:
+      - ApiKeyAuth: []
+      summary: GetUserWithPosts
+      tags:
+      - user
   /v1/user/up_user:
-    post:
+    put:
       consumes:
       - application/json
       description: Viewing a single User by id
@@ -510,7 +813,7 @@ paths:
         name: UpUser
         required: true
         schema:
-          $ref: '#/definitions/models.UpdateUserReq'
+          $ref: '#/definitions/models.UpdateUser'
       produces:
       - application/json
       responses:
@@ -528,7 +831,7 @@ paths:
             $ref: '#/definitions/models.StandardErrorModel'
       security:
       - ApiKeyAuth: []
-      summary: GetUser
+      summary: UpdateUser
       tags:
       - user
 securityDefinitions:

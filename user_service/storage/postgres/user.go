@@ -151,40 +151,42 @@ func (u *UserRepo) DeleteUser(ctx context.Context, req *pb.DeleteUserReq) (*pb.D
 }
 
 func (u *UserRepo) GetAllUsers(ctx context.Context, req *pb.GetAllUsersReq) (*pb.GetAllUsersRes, error) {
-	return &pb.GetAllUsersRes{
-		Users: []*pb.User{
-			{
-				Id:        "5e51b8a2-543f-4572-91b8-a2543f157276",
-				UserName:  "Ali_007",
-				FirstName: "Ali",
-				LastName:  "Jo'raxonov",
-				Email:     "ali20030505@gmail.com",
-				Password:  "Tj3884536",
-				Role:      "Admin",
-				Bio:       "Mod data bio",
-				WebSite:   "Test website",
-				CreatedAt: "2000-01-01",
-				UpdatedAt: "2001-02-02",
-				DeletedAt: "2003-03-03",
-				Posts:     nil,
-			},
-			{
-				Id:        "6e61c9b3-654g-4683-92c9-b3554g267277",
-				UserName:  "John_123",
-				FirstName: "John",
-				LastName:  "Doe",
-				Email:     "john.doe@mail.com",
-				Password:  "002002002",
-				Role:      "User",
-				Bio:       "New bio",
-				WebSite:   "New website",
-				CreatedAt: "2005-05-05",
-				UpdatedAt: "2006-06-06",
-				DeletedAt: "",
-				Posts:     nil,
-			},
-		},
-	}, nil
+	var users pb.GetAllUsersRes
+	offset := req.Limit * (req.Page - 1)
+	query := `SELECT id,
+									user_name,
+									first_name,
+									last_name,
+									email,
+									role,
+									bio,
+									website,
+									created_at ,
+									updated_at FROM users WHERE deleted_at IS NULL LIMIT $1 OFFSET $2`
+	rows, err := u.db.Query(query, req.Limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var user pb.User
+		err := rows.Scan(
+			&user.Id,
+			&user.UserName,
+			&user.FirstName,
+			&user.LastName,
+			&user.Email,
+			&user.Role,
+			&user.Bio,
+			&user.WebSite,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		users.Users = append(users.Users, &user)
+	}
+	return &users, nil
 }
 
 func (u *UserRepo) CheckUniques(ctx context.Context, req *pb.CheckUniqReq) (*pb.CheckUniqRes, error) {

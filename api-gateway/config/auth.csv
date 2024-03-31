@@ -1,6 +1,7 @@
 p, unauthorazed, /v1/swagger*, GET
 p, unauthorazed, /v1/auth/*, POST
 p, user, /v1/user/*, POST || PUT || GET
+p, user, /v1/post/*, POST || PUT || GET || DELETE
 p, suAdmin, /v1/suAdmin/* , POST || PUT || GET || DELETE
 p, suAdmin, /v1/*, GET || POST || PUT || DELETE
 g, suAdmin, user

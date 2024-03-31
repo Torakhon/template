@@ -47,8 +47,8 @@ message UpdatePostReq{
 message SearchReq{
   string field = 1;
   string value = 2;
-  int64 page = 4;
-  int64 limit = 5;
+  int32 page = 4;
+  int32 limit = 5;
 }
 
 message CreateReq{

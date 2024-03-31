@@ -16,7 +16,7 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/v1/auth/Login/": {
-            "comment": {
+            "post": {
                 "description": "Login - Api for registering users",
                 "consumes": [
                     "application/json"
@@ -62,7 +62,7 @@ const docTemplate = `{
             }
         },
         "/v1/auth/authorization/": {
-            "comment": {
+            "post": {
                 "description": "Authorization - Api for registering users",
                 "consumes": [
                     "application/json"
@@ -108,7 +108,7 @@ const docTemplate = `{
             }
         },
         "/v1/auth/register/": {
-            "comment": {
+            "post": {
                 "description": "Register - Api for registering users",
                 "consumes": [
                     "application/json"
@@ -153,8 +153,413 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/post/click_dislike": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Viewing a single User by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "ClickDisLike",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "post_id",
+                        "name": "post_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postModel.Status"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post/click_like": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Viewing a single User by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "ClickLike",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "post_id",
+                        "name": "post_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postModel.Status"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Viewing a single User by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "CreatePost",
+                "parameters": [
+                    {
+                        "description": "create post",
+                        "name": "CreatePost",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/postModel.CreateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postModel.Post"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post/delete_post": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Viewing a single User by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "DeletePost",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "post_id",
+                        "name": "post_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postModel.Status"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post/get_by_owner_id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Viewing a single User by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "GetPostByOwnerId",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postModel.Posts"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post/get_post": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Viewing a single User by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "GetPost",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "post_id",
+                        "name": "post_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postModel.Post"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post/search_post": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Viewing a single User by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "SearchPost",
+                "parameters": [
+                    {
+                        "description": "search post",
+                        "name": "SearchPost",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/postModel.SearchReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postModel.SearchReq"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/post/update_post": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Viewing a single User by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "UpdatePost",
+                "parameters": [
+                    {
+                        "description": "update post",
+                        "name": "UpdatePost",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/postModel.UpdatePostReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postModel.Post"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.StandardErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/suAdmin/add-user-role": {
-            "comment": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -275,7 +680,7 @@ const docTemplate = `{
             }
         },
         "/v1/suAdmin/up_role": {
-            "comment": {
+            "put": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -368,63 +773,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/user/create_product": {
-            "comment": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Product",
-                "parameters": [
-                    {
-                        "description": "Create Product",
-                        "name": "CreateProduct",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Product"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Product"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.StandardErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.StandardErrorModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/user/get_product": {
+        "/v1/user/get_all_users": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
+                "description": "Viewing a single User by id",
                 "consumes": [
                     "application/json"
                 ],
@@ -432,15 +788,22 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "user"
                 ],
-                "summary": "GetProduct",
+                "summary": "GetAllUsers",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "name",
-                        "name": "name",
-                        "in": "path",
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -448,7 +811,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Product"
+                            "$ref": "#/definitions/models.UsersRes"
                         }
                     },
                     "400": {
@@ -466,7 +829,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/user/info": {
+        "/v1/user/get_user": {
             "get": {
                 "security": [
                     {
@@ -506,8 +869,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/user/up_user": {
-            "comment": {
+        "/v1/user/get_user_posts": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -523,23 +886,28 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "GetUser",
+                "summary": "GetUserWithPosts",
                 "parameters": [
                     {
-                        "description": "Up User",
-                        "name": "UpUser",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UpdateUserReq"
-                        }
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UpdateUserRes"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -557,8 +925,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/user/{page}/{limit}": {
-            "comment": {
+        "/v1/user/up_user": {
+            "put": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -574,15 +942,15 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "GetAllUsers",
+                "summary": "UpdateUser",
                 "parameters": [
                     {
-                        "description": "Get All Users",
-                        "name": "GetAllUsers",
+                        "description": "Up User",
+                        "name": "UpUser",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UsersReq"
+                            "$ref": "#/definitions/models.UpdateUser"
                         }
                     }
                 ],
@@ -590,7 +958,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UsersRes"
+                            "$ref": "#/definitions/models.UpdateUserRes"
                         }
                     },
                     "400": {
@@ -682,39 +1050,28 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Product": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "prays": {
-                    "type": "integer"
-                }
-            }
-        },
         "models.RegisterModelReq": {
             "type": "object",
             "properties": {
+                "bio": {
+                    "type": "string"
+                },
                 "email": {
+                    "type": "string"
+                },
+                "first_name": {
                     "type": "string"
                 },
                 "last_name": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string"
                 },
-                "phone_number": {
+                "user_name": {
+                    "type": "string"
+                },
+                "website": {
                     "type": "string"
                 }
             }
@@ -765,22 +1122,25 @@ const docTemplate = `{
                 }
             }
         },
-        "models.UpdateUserReq": {
+        "models.UpdateUser": {
             "type": "object",
             "properties": {
-                "email": {
+                "bio": {
+                    "type": "string"
+                },
+                "first_name": {
                     "type": "string"
                 },
                 "last_name": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string"
                 },
-                "phone_number": {
+                "user_name": {
+                    "type": "string"
+                },
+                "website": {
                     "type": "string"
                 }
             }
@@ -788,16 +1148,25 @@ const docTemplate = `{
         "models.UpdateUserRes": {
             "type": "object",
             "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
                 "last_name": {
                     "type": "string"
                 },
-                "name": {
+                "password": {
                     "type": "string"
                 },
-                "phone_number": {
+                "token": {
                     "type": "string"
                 },
-                "role": {
+                "user_name": {
+                    "type": "string"
+                },
+                "website": {
                     "type": "string"
                 }
             }
@@ -805,34 +1174,32 @@ const docTemplate = `{
         "models.User": {
             "type": "object",
             "properties": {
+                "bio": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
-                "id": {
+                "first_name": {
                     "type": "string"
                 },
                 "last_name": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/postModel.Post"
+                    }
                 },
                 "role": {
                     "type": "string"
-                }
-            }
-        },
-        "models.UsersReq": {
-            "type": "object",
-            "properties": {
-                "limit": {
-                    "type": "integer"
                 },
-                "page": {
-                    "type": "integer"
+                "user_name": {
+                    "type": "string"
+                },
+                "website": {
+                    "type": "string"
                 }
             }
         },
@@ -844,6 +1211,111 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.AllUsers"
                     }
+                }
+            }
+        },
+        "postModel.CreateReq": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "postModel.Post": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "dislikes": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "likes": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "views": {
+                    "type": "integer"
+                }
+            }
+        },
+        "postModel.Posts": {
+            "type": "object",
+            "properties": {
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/postModel.Post"
+                    }
+                }
+            }
+        },
+        "postModel.SearchReq": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "postModel.Status": {
+            "type": "object",
+            "properties": {
+                "'status'": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "postModel.UpdatePostReq": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         }
@@ -867,6 +1339,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {

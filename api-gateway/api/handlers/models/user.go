@@ -1,12 +1,20 @@
 package models
 
+import "api-gateway/api/handlers/models/postModel"
+
+type Users struct {
+	Users []User `json:"users"`
+}
+
 type User struct {
-	Id          string `json:"id"`
-	Name        string `json:"name"`
-	LastName    string `json:"last_name"`
-	Email       string `json:"email"`
-	Role        string `json:"role"`
-	PhoneNumber string `json:"phone_number"`
+	UserName  string           `json:"user_name"`
+	FirstName string           `json:"first_name"`
+	LastName  string           `json:"last_name"`
+	Email     string           `json:"email"`
+	Role      string           `json:"role"`
+	Bio       string           `json:"bio"`
+	Website   string           `json:"website"`
+	Posts     []postModel.Post `json:"posts"`
 }
 
 type CreateUserReq struct {
@@ -22,19 +30,23 @@ type GetUserReq struct {
 	Id string `json:"id"`
 }
 
-type UpdateUserReq struct {
-	Name        string `json:"name"`
-	LastName    string `json:"last_name"`
-	Email       string `json:"email"`
-	Password    string `json:"password"`
-	PhoneNumber string `json:"phone_number"`
+type UpdateUser struct {
+	UserName  string `json:"user_name"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Password  string `json:"password"`
+	Bio       string `json:"bio"`
+	Website   string `json:"website"`
 }
 
 type UpdateUserRes struct {
-	Name        string `json:"name"`
-	LastName    string `json:"last_name"`
-	Role        string `json:"role"`
-	PhoneNumber string `json:"phone_number"`
+	UserName  string `json:"user_name"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Password  string `json:"password"`
+	Bio       string `json:"bio"`
+	Website   string `json:"website"`
+	Token     string `json:"token"`
 }
 
 type AllUsers struct {
@@ -51,4 +63,7 @@ type UsersRes struct {
 type UsersReq struct {
 	Limit int32 `json:"limit"`
 	Page  int32 `json:"page"`
+}
+
+type name struct {
 }

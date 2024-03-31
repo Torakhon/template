@@ -4,7 +4,6 @@ import (
 	t "api-gateway/api/tokens"
 	"api-gateway/config"
 	"api-gateway/pkg/logger"
-	"api-gateway/queue/kafka/producer"
 	"api-gateway/services"
 	"github.com/casbin/casbin/v2"
 )
@@ -15,7 +14,7 @@ type HandlerV1 struct {
 	serviceManager services.IServiceManager
 	cfg            config.Config
 	jwthandler     t.JWTHandler
-	writer         producer.KafkaProducer
+	//writer         producer.KafkaProducer
 }
 
 // HandlerV1Config ...
@@ -25,7 +24,7 @@ type HandlerV1Config struct {
 	Cfg            config.Config
 	JWTHandler     t.JWTHandler
 	Enforcer       *casbin.Enforcer
-	Writer         producer.KafkaProducer
+	//Writer         producer.KafkaProducer
 }
 
 // New ...
@@ -35,6 +34,6 @@ func New(c *HandlerV1Config) *HandlerV1 {
 		serviceManager: c.ServiceManager,
 		jwthandler:     c.JWTHandler,
 		cfg:            c.Cfg,
-		writer:         c.Writer,
+		//writer:         c.Writer,
 	}
 }

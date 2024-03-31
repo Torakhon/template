@@ -2,18 +2,20 @@ package v1
 
 import (
 	"api-gateway/api/handlers/models"
+	"api-gateway/api/handlers/models/postModel"
 	token2 "api-gateway/api/tokens"
 	cfg "api-gateway/config"
+	postPb "api-gateway/genproto/post"
 	pb "api-gateway/genproto/users"
 	"api-gateway/pkg/etc"
 	l "api-gateway/pkg/logger"
-	"api-gateway/pkg/utils"
 	"context"
-	_ "fmt"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
 	"google.golang.org/protobuf/encoding/protojson"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -28,9 +30,8 @@ import (
 // @Success 200 {object} models.User
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/user/info [get]
+// @Router /v1/user/get_user [get]
 func (h *HandlerV1) GetUser(c *gin.Context) {
-
 	token := c.GetHeader("Authorization")
 
 	if token == "" {
@@ -48,9 +49,10 @@ func (h *HandlerV1) GetUser(c *gin.Context) {
 	id := claims["id"]
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cancel()
-	response, err := h.serviceManager.UserService().GetUser(
+	res, err := h.serviceManager.UserService().GetUser(
 		ctx, &pb.GetUserReq{
-			Id: cast.ToString(id),
+			Field: "id",
+			Value: cast.ToString(id),
 		})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -61,30 +63,145 @@ func (h *HandlerV1) GetUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, models.User{
-		Id:          response.Id,
-		Name:        response.Name,
-		LastName:    response.LastName,
-		Role:        response.Role,
-		Email:       response.Email,
-		PhoneNumber: response.PhoneNumber,
+		UserName:  res.UserName,
+		FirstName: res.FirstName,
+		LastName:  res.LastName,
+		Email:     res.Email,
+		Role:      res.Role,
+		Bio:       res.Bio,
+		Website:   res.WebSite,
 	})
 }
 
-// UpUser ...
+// GetUserWithPosts ...
 // @Security ApiKeyAuth
-// @Summary GetUser
+// @Summary GetUserWithPosts
 // @Description Viewing a single User by id
 // @Tags user
 // @Accept json
 // @Produce json
-// @Param UpUser body models.UpdateUserReq true "Up User"
+// @Param page query int true "Page number"
+// @Param limit query int true "Items per page"
+// @Success 200 {object} models.User
+// @Failure 400 {object} models.StandardErrorModel
+// @Failure 500 {object} models.StandardErrorModel
+// @Router /v1/user/get_user_posts [get]
+func (h *HandlerV1) GetUserWithPosts(c *gin.Context) {
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "10")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid page number",
+		})
+		h.log.Error("invalid page number", l.Error(err))
+		return
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid limit",
+		})
+		h.log.Error("invalid limit", l.Error(err))
+		return
+	}
+
+	var jsonMarshal protojson.MarshalOptions
+	jsonMarshal.UseProtoNames = true
+
+	token := c.GetHeader("Authorization")
+
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "invalid token"})
+		return
+	}
+
+	claims, err := token2.ExtractClaim(token, []byte(cfg.Load().SigningKey))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"message": "invalid token",
+		})
+		return
+	}
+	id := claims["id"]
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	defer cancel()
+
+	res, err := h.serviceManager.UserService().GetUser(
+		ctx, &pb.GetUserReq{
+			Field: "id",
+			Value: cast.ToString(id),
+		})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		h.log.Error("failed to get user", l.Error(err))
+		return
+	}
+	posts, err := h.serviceManager.PostService().SearchPost(ctx, &postPb.SearchReq{
+		Field: "user_id",
+		Value: res.Id,
+		Page:  int32(page),
+		Limit: int32(limit),
+	})
+	fmt.Println(err)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		h.log.Error("failed to search posts", l.Error(err))
+		return
+	}
+
+	var userPosts []postModel.Post
+
+	for _, post := range posts.Posts {
+		ps := postModel.Post{
+			Id:        post.Id,
+			Title:     post.Title,
+			Content:   post.Content,
+			UserId:    post.UserId,
+			Category:  post.Category,
+			Likes:     post.Likes,
+			Dislikes:  post.Dislikes,
+			Views:     post.Views,
+			CreatedAt: post.CreatedAt,
+		}
+		userPosts = append(userPosts, ps)
+	}
+
+	c.JSON(http.StatusOK, models.User{
+		UserName:  res.UserName,
+		FirstName: res.FirstName,
+		LastName:  res.LastName,
+		Email:     res.Email,
+		Role:      res.Role,
+		Bio:       res.Bio,
+		Website:   res.WebSite,
+		Posts:     userPosts,
+	})
+}
+
+// UpdateUser ...
+// @Security ApiKeyAuth
+// @Summary UpdateUser
+// @Description Viewing a single User by id
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param UpUser body models.UpdateUser true "Up User"
 // @Success 200 {object} models.UpdateUserRes
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/user/up_user [comment]
-func (h *HandlerV1) UpUser(c *gin.Context) {
+// @Router /v1/user/up_user [put]
+func (h *HandlerV1) UpdateUser(c *gin.Context) {
 	var (
-		body        models.UpdateUserReq
+		body        models.UpdateUser
 		jsonMarshal protojson.MarshalOptions
 	)
 	jsonMarshal.UseProtoNames = true
@@ -127,12 +244,14 @@ func (h *HandlerV1) UpUser(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cancel()
-	response, err := h.serviceManager.UserService().UpdateUser(ctx, &pb.UpdateUserReq{
-		Name:        body.Name,
-		LastName:    body.LastName,
-		Password:    body.Password,
-		PhoneNumber: body.PhoneNumber,
-		Id:          cast.ToString(claims["id"]),
+	res, err := h.serviceManager.UserService().UpdateUser(ctx, &pb.UpdateUserReq{
+		Id:        cast.ToString(claims["id"]),
+		UserName:  body.UserName,
+		FirstName: body.FirstName,
+		LastName:  body.LastName,
+		Password:  body.Password,
+		Bio:       body.Bio,
+		WebSite:   body.Website,
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -142,11 +261,12 @@ func (h *HandlerV1) UpUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.UpdateUserRes{
-		Name:        response.Name,
-		LastName:    response.LastName,
-		Role:        response.Role,
-		PhoneNumber: response.PhoneNumber,
+	c.JSON(http.StatusOK, models.UpdateUser{
+		UserName:  res.UserName,
+		FirstName: res.FirstName,
+		LastName:  res.LastName,
+		Bio:       res.Bio,
+		Website:   res.WebSite,
 	})
 }
 
@@ -157,19 +277,31 @@ func (h *HandlerV1) UpUser(c *gin.Context) {
 // @Tags user
 // @Accept json
 // @Produce json
-// @Param GetAllUsers body models.UsersReq true "Get All Users"
+// @Param page query int true "Page number"
+// @Param limit query int true "Items per page"
 // @Success 200 {object} models.UsersRes
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/user/{page}/{limit} [comment]
+// @Router /v1/user/get_all_users [get]
 func (h *HandlerV1) GetAllUsers(c *gin.Context) {
-	queryParams := c.Request.URL.Query()
-	params, errStr := utils.ParseQueryParams(queryParams)
-	if errStr != nil {
+	pageStr := c.Query("page")
+	limitStr := c.Query("limit")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": errStr[0],
+			"error": "invalid page number",
 		})
-		h.log.Error("failed to parse query params json" + errStr[0])
+		h.log.Error("invalid page number", l.Error(err))
+		return
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid limit",
+		})
+		h.log.Error("invalid limit", l.Error(err))
 		return
 	}
 
@@ -178,10 +310,9 @@ func (h *HandlerV1) GetAllUsers(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cancel()
-
 	response, err := h.serviceManager.UserService().GetAllUsers(ctx, &pb.GetAllUsersReq{
-		Page:  params.Page,
-		Limit: params.Limit,
+		Page:  int64(page),
+		Limit: int64(limit),
 	})
 
 	if err != nil {
@@ -191,14 +322,23 @@ func (h *HandlerV1) GetAllUsers(c *gin.Context) {
 		h.log.Error("failed to list users", l.Error(err))
 		return
 	}
-	var res []models.AllUsers
-	for _, i := range response.Users {
-		r := models.AllUsers{}
-		r.Name = i.Name
-		r.LastName = i.LastName
-		r.Email = i.Email
-		r.PhoneNumber = i.PhoneNumber
-		res = append(res, r)
+	var res models.Users
+	for _, user := range response.Users {
+		r := models.User{
+			UserName:  user.UserName,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			Email:     user.Email,
+			Role:      user.Role,
+			Bio:       user.Bio,
+			Website:   user.WebSite,
+		}
+
+		res.Users = append(res.Users, r)
 	}
-	c.JSON(http.StatusOK, &models.UsersRes{Users: res})
+	c.JSON(http.StatusOK, res)
+}
+
+func (h HandlerV1) UpdateEmail(c *gin.Context) {
+
 }

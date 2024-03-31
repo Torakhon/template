@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS posts (
     id UUID NOT NULl PRIMARY KEY,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    user_id UUID UNIQUE NOT NULl ,
+    user_id UUID  NOT NULl ,
     category TEXT NOT NULL,
     likes INT DEFAULT 0,
     dislikes INT DEFAULT 0,

@@ -24,7 +24,7 @@ func New(cfg config.Config) (IServiceManager, error) {
 		fmt.Sprintf("%s:%d", cfg.PostServiceHost, cfg.PostServicePort),
 		grpc.WithInsecure())
 	if err != nil {
-		return nil, fmt.Errorf("post service dial host : %s comment :%d",
+		return nil, fmt.Errorf("postModel service dial host : %s comment :%d",
 			cfg.PostServiceHost, cfg.PostServicePort)
 	}
 	commentConn, err := grpc.Dial(

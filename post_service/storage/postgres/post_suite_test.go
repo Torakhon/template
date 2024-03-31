@@ -4,7 +4,7 @@ package postgres
 //import (
 //	"github.com/stretchr/testify/suite"
 //	"post_service/config"
-//	pb "post_service/genproto/post"
+//	pb "post_service/genproto/postModel"
 //	"post_service/pkg/db"
 //	"post_service/storage/repo"
 //	"testing"
@@ -23,13 +23,13 @@ package postgres
 //}
 //
 //func (s *PostRepositoryTestSite) TestUserCRUD() {
-//	post := &pb.CreateRequest{
+//	postModel := &pb.CreateRequest{
 //		Title:    "asasas",
 //		ImageUrl: "sasas",
 //		UserId:   "805209d0-5ad8-4187-ad3c-26f1ced97784",
 //	}
 //
-//	reqPost, err := s.Repository.Create(post)
+//	reqPost, err := s.Repository.Create(postModel)
 //	s.Suite.NotNil(reqPost)
 //	s.Suite.NoError(err)
 //
