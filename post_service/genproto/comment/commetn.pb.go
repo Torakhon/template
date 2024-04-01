@@ -29,7 +29,6 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 type ClickReq struct {
 	CommentId            string   `protobuf:"bytes,1,opt,name=comment_id,json=commentId,proto3" json:"comment_id"`
 	UserId               string   `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id"`
-	Like                 bool     `protobuf:"varint,3,opt,name=like,proto3" json:"like"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -80,13 +79,6 @@ func (m *ClickReq) GetUserId() string {
 		return m.UserId
 	}
 	return ""
-}
-
-func (m *ClickReq) GetLike() bool {
-	if m != nil {
-		return m.Like
-	}
-	return false
 }
 
 type CommentLike struct {
@@ -303,6 +295,8 @@ func (m *DeleteRes) GetStatus() bool {
 
 type GetByOwnerIdReq struct {
 	OwnerId              string   `protobuf:"bytes,1,opt,name=owner_id,json=ownerId,proto3" json:"owner_id"`
+	Limit                int64    `protobuf:"varint,2,opt,name=limit,proto3" json:"limit"`
+	Page                 int64    `protobuf:"varint,3,opt,name=page,proto3" json:"page"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -348,10 +342,22 @@ func (m *GetByOwnerIdReq) GetOwnerId() string {
 	return ""
 }
 
+func (m *GetByOwnerIdReq) GetLimit() int64 {
+	if m != nil {
+		return m.Limit
+	}
+	return 0
+}
+
+func (m *GetByOwnerIdReq) GetPage() int64 {
+	if m != nil {
+		return m.Page
+	}
+	return 0
+}
+
 type GetByIdCommentsRes struct {
 	Comments             []*Comment `protobuf:"bytes,1,rep,name=comments,proto3" json:"comments"`
-	Limit                int64      `protobuf:"varint,2,opt,name=limit,proto3" json:"limit"`
-	Page                 int64      `protobuf:"varint,3,opt,name=page,proto3" json:"page"`
 	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
 	XXX_unrecognized     []byte     `json:"-"`
 	XXX_sizecache        int32      `json:"-"`
@@ -397,24 +403,11 @@ func (m *GetByIdCommentsRes) GetComments() []*Comment {
 	return nil
 }
 
-func (m *GetByIdCommentsRes) GetLimit() int64 {
-	if m != nil {
-		return m.Limit
-	}
-	return 0
-}
-
-func (m *GetByIdCommentsRes) GetPage() int64 {
-	if m != nil {
-		return m.Page
-	}
-	return 0
-}
-
 type CreateReq struct {
 	PostId               string   `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id"`
 	UserId               string   `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id"`
 	Content              string   `protobuf:"bytes,3,opt,name=content,proto3" json:"content"`
+	CommentId            string   `protobuf:"bytes,4,opt,name=comment_id,json=commentId,proto3" json:"comment_id"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -470,6 +463,13 @@ func (m *CreateReq) GetUserId() string {
 func (m *CreateReq) GetContent() string {
 	if m != nil {
 		return m.Content
+	}
+	return ""
+}
+
+func (m *CreateReq) GetCommentId() string {
+	if m != nil {
+		return m.CommentId
 	}
 	return ""
 }
@@ -543,7 +543,9 @@ type Comment struct {
 	UserId               string   `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id"`
 	Content              string   `protobuf:"bytes,4,opt,name=content,proto3" json:"content"`
 	Likes                int64    `protobuf:"varint,5,opt,name=likes,proto3" json:"likes"`
-	Dislikes             int64    `protobuf:"varint,6,opt,name=dislikes,proto3" json:"dislikes"`
+	CreatedAt            string   `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at"`
+	UpdatedAt            string   `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at"`
+	DeletedAt            string   `protobuf:"bytes,8,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -617,11 +619,25 @@ func (m *Comment) GetLikes() int64 {
 	return 0
 }
 
-func (m *Comment) GetDislikes() int64 {
+func (m *Comment) GetCreatedAt() string {
 	if m != nil {
-		return m.Dislikes
+		return m.CreatedAt
 	}
-	return 0
+	return ""
+}
+
+func (m *Comment) GetUpdatedAt() string {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return ""
+}
+
+func (m *Comment) GetDeletedAt() string {
+	if m != nil {
+		return m.DeletedAt
+	}
+	return ""
 }
 
 func init() {
@@ -640,39 +656,41 @@ func init() {
 func init() { proto.RegisterFile("comment/commetn.proto", fileDescriptor_4cc96fd01827f319) }
 
 var fileDescriptor_4cc96fd01827f319 = []byte{
-	// 512 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xcb, 0x6e, 0xd3, 0x50,
-	0x10, 0xc5, 0x75, 0xeb, 0xc7, 0x44, 0x2d, 0x66, 0x08, 0xd4, 0x35, 0x22, 0x14, 0xb3, 0xc9, 0xa2,
-	0x0a, 0x52, 0x59, 0x82, 0x58, 0x34, 0x48, 0x55, 0x78, 0x08, 0xe4, 0x0a, 0x58, 0x56, 0x21, 0x1e,
-	0x21, 0xcb, 0x8e, 0x9d, 0xe6, 0xde, 0x12, 0xf1, 0x25, 0xf0, 0x05, 0x7c, 0x0b, 0x4b, 0x3e, 0x01,
-	0x85, 0x1f, 0x41, 0xf7, 0x61, 0x27, 0x37, 0xd0, 0x28, 0x12, 0xac, 0xec, 0x99, 0x39, 0x77, 0xe6,
-	0x9c, 0x73, 0x1f, 0x70, 0x6b, 0x54, 0x8d, 0xc7, 0x54, 0xf2, 0x87, 0xf2, 0xcb, 0xcb, 0xde, 0x64,
-	0x5a, 0xf1, 0x0a, 0x5d, 0x9d, 0x8e, 0xdf, 0x81, 0xd7, 0x2f, 0xb2, 0x51, 0x9e, 0xd0, 0x05, 0xde,
-	0x05, 0xd0, 0xe9, 0xf3, 0x2c, 0x0d, 0xad, 0x43, 0xab, 0xeb, 0x27, 0xbe, 0xce, 0x0c, 0x52, 0xdc,
-	0x07, 0xf7, 0x92, 0xd1, 0x54, 0xd4, 0xb6, 0x64, 0xcd, 0x11, 0xe1, 0x20, 0x45, 0x84, 0xed, 0x22,
-	0xcb, 0x29, 0xb4, 0x0f, 0xad, 0xae, 0x97, 0xc8, 0xff, 0xf8, 0x3e, 0xb4, 0xfa, 0x6a, 0xe5, 0xcb,
-	0x2c, 0xa7, 0x06, 0x62, 0x2d, 0x41, 0x72, 0x08, 0xde, 0x4e, 0xd2, 0x21, 0x27, 0x0d, 0xfc, 0x17,
-	0x0a, 0xf7, 0xa0, 0x55, 0xd2, 0xec, 0x7c, 0x54, 0x95, 0x9c, 0x4a, 0x2e, 0x99, 0xf8, 0x09, 0x94,
-	0x34, 0xeb, 0xab, 0x4c, 0xfc, 0x1c, 0x82, 0x67, 0x54, 0xd0, 0xff, 0x18, 0x16, 0x3f, 0x00, 0x5f,
-	0xf5, 0x4a, 0x88, 0xe1, 0x6d, 0x70, 0x18, 0x1f, 0xf2, 0x4b, 0xa6, 0xb5, 0xe9, 0x28, 0x3e, 0x82,
-	0xeb, 0xa7, 0xc4, 0x4f, 0x3e, 0xbf, 0x9e, 0x95, 0x62, 0x91, 0x98, 0x77, 0x00, 0x5e, 0x25, 0xa2,
-	0xc5, 0x34, 0xb7, 0x52, 0xd5, 0xb8, 0x00, 0x94, 0xe8, 0x41, 0xaa, 0xf9, 0x31, 0xd1, 0xfb, 0x08,
-	0x3c, 0x4d, 0x47, 0x74, 0xb7, 0xbb, 0xad, 0xe3, 0xa0, 0xa7, 0x13, 0xbd, 0x5a, 0x47, 0x83, 0xc0,
-	0x36, 0xec, 0x14, 0xd9, 0x38, 0xe3, 0x92, 0xad, 0x9d, 0xa8, 0x40, 0x38, 0x3f, 0x19, 0x7e, 0x54,
-	0x9b, 0x63, 0x27, 0xf2, 0x3f, 0x7e, 0x0f, 0x7e, 0x7f, 0x4a, 0x43, 0x21, 0xe0, 0x42, 0xc8, 0x9c,
-	0x54, 0x6c, 0xc9, 0x02, 0x47, 0x84, 0xeb, 0xcc, 0x0e, 0xc1, 0x35, 0x8d, 0xae, 0xc3, 0xf8, 0x0c,
-	0xf6, 0xa4, 0x8c, 0x37, 0xb2, 0xc3, 0xda, 0xee, 0x9b, 0xb3, 0xfd, 0x66, 0x81, 0xab, 0xd5, 0x6e,
-	0xb0, 0x65, 0xf5, 0xb4, 0xad, 0xab, 0xb4, 0xd8, 0x57, 0x69, 0xd9, 0x36, 0xb4, 0x28, 0x82, 0x39,
-	0xb1, 0x70, 0xa7, 0x26, 0x98, 0x13, 0xc3, 0x08, 0xbc, 0x34, 0x63, 0xaa, 0xe0, 0xc8, 0x42, 0x13,
-	0x1f, 0x7f, 0xb1, 0x61, 0x4f, 0x13, 0x3d, 0xa3, 0xe9, 0xa7, 0x6c, 0x44, 0xd8, 0x03, 0x47, 0x39,
-	0x8d, 0xb8, 0xd8, 0xb9, 0xda, 0xfa, 0xe8, 0x8f, 0xdd, 0xc4, 0x17, 0x70, 0xf3, 0x94, 0x78, 0x7d,
-	0x06, 0x6a, 0x23, 0x71, 0xbf, 0x01, 0x9a, 0xf6, 0x46, 0x77, 0xcc, 0x82, 0x79, 0x7c, 0x5e, 0x41,
-	0xdb, 0x68, 0xa6, 0x8f, 0x22, 0x86, 0xe6, 0xa2, 0xc5, 0x09, 0x5d, 0xdf, 0xee, 0x09, 0xec, 0x1a,
-	0xf7, 0x15, 0x0f, 0x1a, 0xf4, 0xea, 0x3d, 0xfe, 0x8b, 0xb2, 0xa7, 0xb0, 0x6b, 0x5c, 0xc0, 0xa5,
-	0xd5, 0xab, 0x17, 0x33, 0xc2, 0x95, 0x92, 0x98, 0xfe, 0x18, 0x02, 0x8d, 0x90, 0xef, 0x95, 0x7c,
-	0x55, 0x6e, 0x2c, 0xa6, 0xe8, 0x37, 0x2c, 0x6a, 0xaf, 0x0e, 0x16, 0xc0, 0x93, 0xe0, 0xfb, 0xbc,
-	0x63, 0xfd, 0x98, 0x77, 0xac, 0x9f, 0xf3, 0x8e, 0xf5, 0xf5, 0x57, 0xe7, 0xda, 0x07, 0x47, 0xbe,
-	0x83, 0x8f, 0x7e, 0x07, 0x00, 0x00, 0xff, 0xff, 0x73, 0xce, 0x5a, 0x71, 0x20, 0x05, 0x00, 0x00,
+	// 535 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0xc6, 0x75, 0x6a, 0x3b, 0x13, 0xb5, 0x98, 0x25, 0x50, 0x37, 0x88, 0x00, 0xcb, 0xa5, 0x07,
+	0x14, 0xa4, 0x72, 0x04, 0x21, 0x35, 0x41, 0xaa, 0xc2, 0x8f, 0x40, 0xae, 0xe0, 0x1a, 0x99, 0x78,
+	0x84, 0x2c, 0x27, 0x76, 0x1a, 0x6f, 0x1a, 0xf1, 0x24, 0xf0, 0x48, 0x1c, 0x79, 0x04, 0x14, 0x0e,
+	0xbc, 0x06, 0xda, 0xd9, 0x75, 0xdc, 0x35, 0x34, 0x8a, 0x04, 0x27, 0x7b, 0xe6, 0x9b, 0xdd, 0x6f,
+	0xbe, 0x99, 0xd9, 0x81, 0x5b, 0xe3, 0x7c, 0x3a, 0xc5, 0x4c, 0x3c, 0xa6, 0xaf, 0xc8, 0x7a, 0xb3,
+	0x79, 0x2e, 0x72, 0xe6, 0x6a, 0x37, 0xef, 0x83, 0x37, 0x98, 0x24, 0xe3, 0x34, 0xc4, 0x73, 0x76,
+	0x17, 0x40, 0xbb, 0x47, 0x49, 0x1c, 0x58, 0xf7, 0xad, 0xa3, 0x66, 0xd8, 0xd4, 0x9e, 0x61, 0xcc,
+	0x0e, 0xc0, 0x5d, 0x14, 0x38, 0x97, 0xd8, 0x0e, 0x61, 0x8e, 0x34, 0x87, 0x31, 0x7f, 0x00, 0xad,
+	0x81, 0x8a, 0x7a, 0x9d, 0xa4, 0xc8, 0x18, 0x34, 0x26, 0x49, 0x8a, 0x74, 0x81, 0x17, 0xd2, 0x3f,
+	0x4f, 0xc1, 0x7f, 0x3f, 0x8b, 0x23, 0x81, 0x3a, 0xf0, 0x1f, 0xe8, 0xd8, 0x3d, 0x68, 0x65, 0xb8,
+	0x1c, 0x8d, 0xf3, 0x4c, 0x60, 0x26, 0x02, 0x9b, 0x40, 0xc8, 0x70, 0x39, 0x50, 0x1e, 0xfe, 0x12,
+	0xfc, 0x17, 0x38, 0xc1, 0xff, 0x41, 0xc6, 0x1f, 0x42, 0x53, 0xdd, 0x15, 0x62, 0xc1, 0x6e, 0x83,
+	0x53, 0x88, 0x48, 0x2c, 0x0a, 0xad, 0x4d, 0x5b, 0xfc, 0x03, 0x5c, 0x3f, 0x45, 0xd1, 0xff, 0xfc,
+	0x76, 0x99, 0xc9, 0x43, 0x92, 0xef, 0x10, 0xbc, 0x5c, 0x5a, 0x15, 0x9b, 0x9b, 0x2b, 0x94, 0xb5,
+	0x61, 0x77, 0x92, 0x4c, 0x13, 0x41, 0x4c, 0x76, 0xa8, 0x0c, 0x59, 0xb5, 0x59, 0xf4, 0x09, 0x49,
+	0x8e, 0x1d, 0xd2, 0x3f, 0xef, 0x03, 0xa3, 0x7b, 0x87, 0xb1, 0x56, 0x52, 0xc8, 0x2c, 0x1e, 0x81,
+	0xa7, 0x13, 0x97, 0x79, 0xd8, 0x47, 0xad, 0x63, 0xbf, 0xa7, 0x1d, 0xbd, 0x52, 0xf1, 0x3a, 0x82,
+	0x5f, 0x40, 0x73, 0x30, 0xc7, 0x48, 0x0a, 0x38, 0x97, 0x32, 0x67, 0x79, 0x71, 0xa9, 0x04, 0x8e,
+	0x34, 0x37, 0x15, 0x3b, 0x00, 0xd7, 0x2c, 0x74, 0x69, 0xd6, 0x2a, 0xda, 0xa8, 0x55, 0x94, 0x9f,
+	0xc1, 0x3e, 0xe5, 0xfe, 0x8e, 0x08, 0x36, 0x92, 0x6f, 0x5f, 0x90, 0x5f, 0x16, 0xb8, 0x5a, 0xe2,
+	0x16, 0x1d, 0x2d, 0xd9, 0x76, 0xae, 0x92, 0x6a, 0x5f, 0x25, 0xb5, 0x61, 0x4a, 0xa5, 0x04, 0x53,
+	0x2c, 0x82, 0xdd, 0x32, 0xc1, 0x14, 0x0b, 0x4a, 0x80, 0x2a, 0x1b, 0x8f, 0x22, 0x11, 0x38, 0x3a,
+	0x01, 0xe5, 0x39, 0xa1, 0xfc, 0x16, 0x34, 0xf2, 0x04, 0xbb, 0x0a, 0xd6, 0x1e, 0x05, 0xc7, 0x34,
+	0x58, 0x04, 0x7b, 0x0a, 0xd6, 0x9e, 0x13, 0x71, 0xfc, 0xc5, 0x86, 0x7d, 0xad, 0xf4, 0x0c, 0xe7,
+	0x17, 0xc9, 0x18, 0x59, 0x0f, 0x1c, 0xd5, 0x49, 0xc6, 0xaa, 0x7e, 0x97, 0xad, 0xed, 0xfc, 0x31,
+	0x03, 0xec, 0x15, 0xdc, 0x3c, 0x45, 0x51, 0x4e, 0x4e, 0xd9, 0x09, 0x76, 0xb0, 0x0e, 0x34, 0xfb,
+	0xd3, 0xb9, 0x63, 0x02, 0xe6, 0xd0, 0xbd, 0x81, 0xb6, 0x71, 0x99, 0x1e, 0x75, 0x16, 0x98, 0x87,
+	0xaa, 0x17, 0xb0, 0xf9, 0xba, 0x67, 0xb0, 0x67, 0xec, 0x03, 0x76, 0xb8, 0x8e, 0xae, 0xef, 0x89,
+	0xbf, 0x28, 0x7b, 0x0e, 0x7b, 0xc6, 0x03, 0xbf, 0x74, 0xba, 0xfe, 0xf0, 0x3b, 0xac, 0x06, 0x49,
+	0xf6, 0xa7, 0xe0, 0xeb, 0x08, 0xda, 0x7d, 0xb4, 0xb5, 0x6e, 0x54, 0x2c, 0x7a, 0x1f, 0x76, 0xda,
+	0x75, 0x62, 0x19, 0xd8, 0xf7, 0xbf, 0xad, 0xba, 0xd6, 0xf7, 0x55, 0xd7, 0xfa, 0xb1, 0xea, 0x5a,
+	0x5f, 0x7f, 0x76, 0xaf, 0x7d, 0x74, 0x68, 0xa7, 0x3e, 0xf9, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x33,
+	0xc6, 0xf1, 0xa1, 0x6c, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -959,16 +977,6 @@ func (m *ClickReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if m.Like {
-		i--
-		if m.Like {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x18
-	}
 	if len(m.UserId) > 0 {
 		i -= len(m.UserId)
 		copy(dAtA[i:], m.UserId)
@@ -1173,6 +1181,16 @@ func (m *GetByOwnerIdReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
+	if m.Page != 0 {
+		i = encodeVarintCommetn(dAtA, i, uint64(m.Page))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Limit != 0 {
+		i = encodeVarintCommetn(dAtA, i, uint64(m.Limit))
+		i--
+		dAtA[i] = 0x10
+	}
 	if len(m.OwnerId) > 0 {
 		i -= len(m.OwnerId)
 		copy(dAtA[i:], m.OwnerId)
@@ -1206,16 +1224,6 @@ func (m *GetByIdCommentsRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	if m.Page != 0 {
-		i = encodeVarintCommetn(dAtA, i, uint64(m.Page))
-		i--
-		dAtA[i] = 0x18
-	}
-	if m.Limit != 0 {
-		i = encodeVarintCommetn(dAtA, i, uint64(m.Limit))
-		i--
-		dAtA[i] = 0x10
 	}
 	if len(m.Comments) > 0 {
 		for iNdEx := len(m.Comments) - 1; iNdEx >= 0; iNdEx-- {
@@ -1257,6 +1265,13 @@ func (m *CreateReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.CommentId) > 0 {
+		i -= len(m.CommentId)
+		copy(dAtA[i:], m.CommentId)
+		i = encodeVarintCommetn(dAtA, i, uint64(len(m.CommentId)))
+		i--
+		dAtA[i] = 0x22
 	}
 	if len(m.Content) > 0 {
 		i -= len(m.Content)
@@ -1350,10 +1365,26 @@ func (m *Comment) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if m.Dislikes != 0 {
-		i = encodeVarintCommetn(dAtA, i, uint64(m.Dislikes))
+	if len(m.DeletedAt) > 0 {
+		i -= len(m.DeletedAt)
+		copy(dAtA[i:], m.DeletedAt)
+		i = encodeVarintCommetn(dAtA, i, uint64(len(m.DeletedAt)))
 		i--
-		dAtA[i] = 0x30
+		dAtA[i] = 0x42
+	}
+	if len(m.UpdatedAt) > 0 {
+		i -= len(m.UpdatedAt)
+		copy(dAtA[i:], m.UpdatedAt)
+		i = encodeVarintCommetn(dAtA, i, uint64(len(m.UpdatedAt)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.CreatedAt) > 0 {
+		i -= len(m.CreatedAt)
+		copy(dAtA[i:], m.CreatedAt)
+		i = encodeVarintCommetn(dAtA, i, uint64(len(m.CreatedAt)))
+		i--
+		dAtA[i] = 0x32
 	}
 	if m.Likes != 0 {
 		i = encodeVarintCommetn(dAtA, i, uint64(m.Likes))
@@ -1415,9 +1446,6 @@ func (m *ClickReq) Size() (n int) {
 	l = len(m.UserId)
 	if l > 0 {
 		n += 1 + l + sovCommetn(uint64(l))
-	}
-	if m.Like {
-		n += 2
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -1509,6 +1537,12 @@ func (m *GetByOwnerIdReq) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovCommetn(uint64(l))
 	}
+	if m.Limit != 0 {
+		n += 1 + sovCommetn(uint64(m.Limit))
+	}
+	if m.Page != 0 {
+		n += 1 + sovCommetn(uint64(m.Page))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -1526,12 +1560,6 @@ func (m *GetByIdCommentsRes) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovCommetn(uint64(l))
 		}
-	}
-	if m.Limit != 0 {
-		n += 1 + sovCommetn(uint64(m.Limit))
-	}
-	if m.Page != 0 {
-		n += 1 + sovCommetn(uint64(m.Page))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -1554,6 +1582,10 @@ func (m *CreateReq) Size() (n int) {
 		n += 1 + l + sovCommetn(uint64(l))
 	}
 	l = len(m.Content)
+	if l > 0 {
+		n += 1 + l + sovCommetn(uint64(l))
+	}
+	l = len(m.CommentId)
 	if l > 0 {
 		n += 1 + l + sovCommetn(uint64(l))
 	}
@@ -1610,8 +1642,17 @@ func (m *Comment) Size() (n int) {
 	if m.Likes != 0 {
 		n += 1 + sovCommetn(uint64(m.Likes))
 	}
-	if m.Dislikes != 0 {
-		n += 1 + sovCommetn(uint64(m.Dislikes))
+	l = len(m.CreatedAt)
+	if l > 0 {
+		n += 1 + l + sovCommetn(uint64(l))
+	}
+	l = len(m.UpdatedAt)
+	if l > 0 {
+		n += 1 + l + sovCommetn(uint64(l))
+	}
+	l = len(m.DeletedAt)
+	if l > 0 {
+		n += 1 + l + sovCommetn(uint64(l))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -1718,26 +1759,6 @@ func (m *ClickReq) Unmarshal(dAtA []byte) error {
 			}
 			m.UserId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Like", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowCommetn
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Like = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCommetn(dAtA[iNdEx:])
@@ -2225,6 +2246,44 @@ func (m *GetByOwnerIdReq) Unmarshal(dAtA []byte) error {
 			}
 			m.OwnerId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Limit", wireType)
+			}
+			m.Limit = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommetn
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Limit |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Page", wireType)
+			}
+			m.Page = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommetn
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Page |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCommetn(dAtA[iNdEx:])
@@ -2310,44 +2369,6 @@ func (m *GetByIdCommentsRes) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Limit", wireType)
-			}
-			m.Limit = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowCommetn
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Limit |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Page", wireType)
-			}
-			m.Page = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowCommetn
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Page |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCommetn(dAtA[iNdEx:])
@@ -2494,6 +2515,38 @@ func (m *CreateReq) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Content = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CommentId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommetn
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommetn
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommetn
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CommentId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2815,10 +2868,10 @@ func (m *Comment) Unmarshal(dAtA []byte) error {
 				}
 			}
 		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Dislikes", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
 			}
-			m.Dislikes = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowCommetn
@@ -2828,11 +2881,88 @@ func (m *Comment) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Dislikes |= int64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommetn
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommetn
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CreatedAt = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommetn
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommetn
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommetn
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.UpdatedAt = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DeletedAt", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommetn
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommetn
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommetn
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DeletedAt = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCommetn(dAtA[iNdEx:])

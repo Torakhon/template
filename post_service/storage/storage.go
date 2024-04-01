@@ -27,3 +27,24 @@ func NewStoragePg(db *sqlx.DB) *Pg {
 func (s Pg) Post() repo.PostStorageI {
 	return s.postRepo
 }
+
+//type IStorage interface {
+//	Post() repo.PostStorageI
+//}
+//
+//type Pg struct {
+//	db       *mongo.Client
+//	postRepo repo.PostStorageI
+//}
+//
+//// NewStoragePg ...
+//func NewStoragePg(db   *mongo.Client) *Pg {
+//	return &Pg{
+//		db:       db,
+//		postRepo: mongoDBdatabase.NewPostRepo(db,"v1","posts"),
+//	}
+//}
+//
+//func (s Pg) Post() repo.PostStorageI {
+//	return s.postRepo
+//}

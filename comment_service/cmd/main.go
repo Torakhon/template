@@ -32,10 +32,17 @@ func main() {
 		log.Fatal("sqlx connection to postgres error", logger.Error(err))
 	}
 
+	//client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://mongodb:27017"))
+	//if err != nil {
+	//	log.Fatal("connection to mongosh error", logger.Error(err))
+	//}
+
 	grpcClient, err := grpclient.New(cfg)
 	if err != nil {
 		log.Fatal("grpc client dial error", logger.Error(err))
 	}
+
+	// agar mongo ishlatmoqchi bo'linsa connDB orniga client beriladi
 
 	commentService := service.NewCommentService(connDB, log, grpcClient)
 

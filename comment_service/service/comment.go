@@ -25,6 +25,24 @@ func NewCommentService(db *sqlx.DB, log l.Logger, grpcClient grpcClient.Iservive
 	}
 }
 
+//         mongo DB
+
+//// UserService ...
+//type UserService struct {
+//	storage    storage.IStorage
+//	logger     l.Logger
+//	grpcClient grpcClient.IServiceManager
+//}
+//
+//// NewUserService ...
+//func NewUserService(db *mongo.Client, log l.Logger, grpcClient grpcClient.IServiceManager) *UserService {
+//	return &UserService{
+//		storage:    storage.NewStoragePg(db),
+//		logger:     log,
+//		grpcClient: grpcClient,
+//	}
+//}
+
 func (r *CommentService) Create(ctx context.Context, req *commentPb.CreateReq) (*commentPb.Comment, error) {
 	return r.storage.Comment().Create(ctx, req)
 }

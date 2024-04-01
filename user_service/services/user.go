@@ -25,6 +25,24 @@ func NewUserService(db *sqlx.DB, log l.Logger, grpcClient grpcClient.IServiceMan
 	}
 }
 
+//         mongo DB
+
+//// UserService ...
+//type UserService struct {
+//	storage    storage.IStorage
+//	logger     l.Logger
+//	grpcClient grpcClient.IServiceManager
+//}
+//
+//// NewUserService ...
+//func NewUserService(db *mongo.Client, log l.Logger, grpcClient grpcClient.IServiceManager) *UserService {
+//	return &UserService{
+//		storage:    storage.NewStoragePg(db),
+//		logger:     log,
+//		grpcClient: grpcClient,
+//	}
+//}
+
 func (s *UserService) CreateUser(ctx context.Context, req *pb.CreateUserReq) (*pb.User, error) {
 	return s.storage.User().CreateUser(ctx, req)
 }

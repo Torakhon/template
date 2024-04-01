@@ -27,3 +27,28 @@ func NewStoragePg(db *sqlx.DB) *Pg {
 func (s Pg) Comment() repo.CommentStorageI {
 	return s.commentRepo
 }
+
+//// IStorage ...
+//type IStorage interface {
+//	Comment() repo.CommentStorageI
+//
+//}
+//
+//type Pg struct {
+//	db          *mongo.Client
+//	commentRepo repo.CommentStorageI
+//
+//}
+//
+//// NewStoragePg ...
+//func NewStoragePg(db *mongo.Client) *Pg {
+//	return &Pg{
+//		db:          db,
+//		commentRepo: mongoDBdatabase.NewCommentRepo(db,"v1","comments"),
+//
+//	}
+//}
+//
+//func (s Pg) Comment() repo.CommentStorageI {
+//	return s.commentRepo
+//}

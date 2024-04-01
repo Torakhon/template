@@ -35,12 +35,12 @@ func main() {
 	//if err != nil {
 	//	log.Fatal("connection to mongosh error", logger.Error(err))
 	//}
-	//collection := client.Database(cfg.MongoDatabase).Collection("users")
 
 	grpcClient, err := grpcient.New(cfg)
 	if err != nil {
 		log.Fatal("grpc client dial error", logger.Error(err))
 	}
+	// agar mongo ishlatmoqchi bo'linsa connDB orniga client beriladi
 	userService := services.NewUserService(connDB, log, grpcClient)
 
 	lis, err := net.Listen("tcp", cfg.RPCPort)

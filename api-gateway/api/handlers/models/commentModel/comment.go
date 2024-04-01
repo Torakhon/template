@@ -11,3 +11,20 @@ type Comment struct {
 	Content   string ` json:"content"`
 	Likes     int64  ` json:"likes"`
 }
+
+type CreateReq struct {
+	CommentID string ` json:"-"`
+	PostID    string ` json:"post_id"`
+	UserID    string ` json:"-"`
+	Content   string ` json:"content"`
+}
+
+type UpdateComment struct {
+	CommentID  string ` json:"comment_id"`
+	UserID     string ` json:"-"`
+	NewContent string ` json:"new_content"`
+}
+
+type Status struct {
+	Status bool `json:"status"`
+}

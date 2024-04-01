@@ -134,9 +134,9 @@ func (r *CommentRepo) UpdateComment(ctx context.Context, req *pb.UpdateCommentRe
 func (r *CommentRepo) DeleteComment(ctx context.Context, req *pb.DeleteCommentReq) (*pb.DeleteRes, error) {
 	query := `UPDATE comments SET
 				deleted_at = now()
-				WHERE comment_id = $1`
+				WHERE comment_id = $1 and user_id = $2`
 
-	_, err := r.db.Exec(query, req.CommentId)
+	_, err := r.db.Exec(query, req.CommentId, req.UserId)
 	if err != nil {
 		return &pb.DeleteRes{Status: false}, err
 	}

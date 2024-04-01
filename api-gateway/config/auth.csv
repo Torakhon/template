@@ -1,7 +1,38 @@
-p, unauthorazed, /v1/swagger*, GET
-p, unauthorazed, /v1/auth/*, POST
-p, user, /v1/user/*, POST || PUT || GET
-p, user, /v1/post/*, POST || PUT || GET || DELETE
-p, suAdmin, /v1/suAdmin/* , POST || PUT || GET || DELETE
-p, suAdmin, /v1/*, GET || POST || PUT || DELETE
-g, suAdmin, user
+p, unauthorized, /v1/swagger/*, GET
+p, unauthorized, /v1/swagger/index.html, GET || POST
+p, unauthorized, /v1/login, POST
+p, unauthorized, /v1/register, POST
+p, unauthorized, /v1/Verification, POST
+p, unauthorized, /v1/swagger/swagger-ui.css, GET
+p, unauthorized, /v1/swagger/swagger-ui-bundle.js, GET
+p, unauthorized, /v1/swagger/swagger-ui-standalone-preset.js, GET
+p, unauthorized, /v1/swagger/favicon-32x32.png, GET
+p, unauthorized, /v1/swagger/swagger/doc.json, GET
+p, suAdmin, /v1/suAdmin/roles, GET
+p, suAdmin, /v1/suAdmin/:role, DELETE
+p, suAdmin, /v1/suAdmin/add-user-role, POST
+p, suAdmin, /v1/suAdmin/up_role, POST
+p, suAdmin, /v1/suAdmin/get_all_users, GET
+p, suAdmin, /v1/suAdmin/delete_user, DELETE
+p, user, /v1/user/get_user, GET
+p, user, /v1/user/get_user_posts, GET
+p, user, /v1/user/up_user, PUT
+p, user, /v1/user/get_all_users, GET
+p, user, /v1/user/post/create, POST
+p, user, /v1/user/post/get_post, GET
+p, user, /v1/user/post/search_post, POST
+p, user, /v1/user/post/get_by_owner_id, GET
+p, user, /v1/user/post/get_with_comment, GET
+p, user, /v1/user/post/update_post, PUT
+p, user, /v1/user/post/delete_post, DELETE
+p, user, /v1/user/post/click_like, POST
+p, user, /v1/user/post/click_dislike, POST
+p, user, /v1/user/comment/create, POST
+p, user, /v1/user/comment/get_comm_by_post_id, GET
+p, user, /v1/user/comment/get_comm_by_owner_id, GET
+p, user, /v1/user/comment/update, PUT
+p, user, /v1/user/comment/delete, DELETE
+p, user, /v1/user/comment/click_like, POST
+p, user, /v1/user/comment/get_all_users, GET
+g, admin, user
+g, suAdmin, admin

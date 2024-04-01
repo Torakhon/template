@@ -30,7 +30,7 @@ import (
 // @Success 200 {object} postModel.Post
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/post/create [post]
+// @Router /v1/user/post/create [post]
 func (h *HandlerV1) CreatePost(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if token == "" {
@@ -108,7 +108,7 @@ func (h *HandlerV1) CreatePost(c *gin.Context) {
 // @Success 200 {object} postModel.Post
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/post/get_post [get]
+// @Router /v1/user/post/get_post [get]
 func (h *HandlerV1) GetPost(c *gin.Context) {
 	post_id := c.Query("post_id")
 
@@ -178,7 +178,7 @@ func (h *HandlerV1) GetPost(c *gin.Context) {
 // @Success 200 {object} postModel.Post
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/post/get_with_comment [get]
+// @Router /v1/user/post/get_with_comment [get]
 func (h *HandlerV1) GetPostWithComment(c *gin.Context) {
 	post_id := c.Query("post_id")
 	comment_page := c.DefaultQuery("page_comment", "1")
@@ -286,7 +286,7 @@ func (h *HandlerV1) GetPostWithComment(c *gin.Context) {
 // @Success 200 {object} postModel.Posts
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/post/get_by_owner_id [get]
+// @Router /v1/user/post/get_by_owner_id [get]
 func (h HandlerV1) GetPostByOwnerId(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	limitStr := c.DefaultQuery("limit", "10")
@@ -388,7 +388,7 @@ func (h HandlerV1) GetPostByOwnerId(c *gin.Context) {
 // @Success 200 {object} postModel.SearchReq
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/post/search_post [post]
+// @Router /v1/user/post/search_post [post]
 func (h *HandlerV1) SearchPost(c *gin.Context) {
 	var (
 		body        postModel.SearchReq
@@ -484,7 +484,7 @@ func (h *HandlerV1) SearchPost(c *gin.Context) {
 // @Success 200 {object} postModel.Post
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/post/update_post [put]
+// @Router /v1/user/post/update_post [put]
 func (h *HandlerV1) UpdatePost(c *gin.Context) {
 	var (
 		body        postModel.UpdatePostReq
@@ -538,7 +538,7 @@ func (h *HandlerV1) UpdatePost(c *gin.Context) {
 // @Success 200 {object} postModel.Status
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/post/delete_post [delete]
+// @Router /v1/user/post/delete_post [delete]
 func (h *HandlerV1) DeletePost(c *gin.Context) {
 	post_id := c.Query("post_id")
 
@@ -571,7 +571,7 @@ func (h *HandlerV1) DeletePost(c *gin.Context) {
 // @Success 200 {object} postModel.Status
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/post/click_like [post]
+// @Router /v1/user/post/click_like [post]
 func (h *HandlerV1) ClickLike(c *gin.Context) {
 	post_id := c.Query("post_id")
 	token := c.GetHeader("Authorization")
@@ -624,7 +624,7 @@ func (h *HandlerV1) ClickLike(c *gin.Context) {
 // @Success 200 {object} postModel.Status
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/post/click_dislike [post]
+// @Router /v1/user/post/click_dislike [post]
 func (h *HandlerV1) ClickDisLike(c *gin.Context) {
 	post_id := c.Query("post_id")
 	token := c.GetHeader("Authorization")

@@ -25,6 +25,24 @@ func NewPostService(db *sqlx.DB, log l.Logger, grpcClient grpcClient.IserviveMan
 	}
 }
 
+//         mongo DB
+
+//// UserService ...
+//type UserService struct {
+//	storage    storage.IStorage
+//	logger     l.Logger
+//	grpcClient grpcClient.IServiceManager
+//}
+//
+//// NewUserService ...
+//func NewUserService(db *mongo.Client, log l.Logger, grpcClient grpcClient.IServiceManager) *UserService {
+//	return &UserService{
+//		storage:    storage.NewStoragePg(db),
+//		logger:     log,
+//		grpcClient: grpcClient,
+//	}
+//}
+
 func (p *PostService) Create(ctx context.Context, req *pb.CreateReq) (*pb.Post, error) {
 	return p.storage.Post().Create(ctx, req)
 }

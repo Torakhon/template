@@ -49,14 +49,58 @@ func New(option Option) *gin.Engine {
 		//Writer:         option.Writer,
 	})
 
-	policies := [][]string{}
+	policies := [][]string{
+		{"unauthorized", "/v1/swagger/*", "GET"},
+		{"unauthorized", "/v1/swagger/index.html", "GET || POST"},
+		{"unauthorized", "/v1/login", "POST"},
+		{"unauthorized", "/v1/register", "POST"},
+		{"unauthorized", "/v1/Verification", "POST"},
+		{"unauthorized", "/v1/swagger/swagger-ui.css", "GET"},
+		{"unauthorized", "/v1/swagger/swagger-ui-bundle.js", "GET"},
+		{"unauthorized", "/v1/swagger/swagger-ui-standalone-preset.js", "GET"},
+		{"unauthorized", "/v1/swagger/favicon-32x32.png", "GET"},
+		{"unauthorized", "/v1/swagger/swagger/doc.json", "GET"},
+		{"suAdmin", "/v1/suAdmin/roles", "GET"},
+		{"suAdmin", "/v1/suAdmin/:role", "DELETE"},
+		{"suAdmin", "/v1/suAdmin/add-user-role", "POST"},
+		{"suAdmin", "/v1/suAdmin/up_role", "POST"},
+		{"user", "/v1/user/get_user", "GET"},
+		{"user", "/v1/user/get_user_posts", "GET"},
+		{"user", "/v1/user/up_user", "PUT"},
+		{"user", "/v1/user/get_all_users", "GET"},
+		{"user", "/v1/user/post/create", "POST"},
+		{"user", "/v1/user/post/get_post", "GET"},
+		{"user", "/v1/user/post/search_post", "POST"},
+		{"user", "/v1/user/post/get_by_owner_id", "GET"},
+		{"user", "/v1/user/post/get_with_comment", "GET"},
+		{"user", "/v1/user/post/update_post", "PUT"},
+		{"user", "/v1/user/post/delete_post", "DELETE"},
+		{"user", "/v1/user/post/click_like", "POST"},
+		{"user", "/v1/user/post/click_dislike", "POST"},
+		{"user", "/v1/user/comment/create", "POST"},
+		{"user", "/v1/user/comment/get_comm_by_post_id", "GET"},
+		{"user", "/v1/user/comment/get_comm_by_owner_id", "GET"},
+		{"user", "/v1/user/comment/update", "PUT"},
+		{"user", "/v1/user/comment/delete", "DELETE"},
+		{"user", "/v1/user/comment/click_like", "POST"},
+		{"user", "/v1/user/comment/get_all_users, GET"},
+	}
+
 	for _, policy := range policies {
 		_, err := option.Enforcer.AddPolicy(policy)
 		if err != nil {
 			option.Logger.Error("error during investor enforcer add policies", zap.Error(err))
 		}
 	}
-	_, err := option.Enforcer.AddGroupingPolicy("suAdmin", "user")
+
+	_, err := option.Enforcer.AddGroupingPolicy("admin", "user")
+	if err != nil {
+		option.Logger.Error("error during adding grouping policy", zap.Error(err))
+	}
+	_, err = option.Enforcer.AddGroupingPolicy("suAdmin", "admin")
+	if err != nil {
+		option.Logger.Error("error during adding grouping policy", zap.Error(err))
+	}
 
 	err = option.Enforcer.SavePolicy()
 	if err != nil {
@@ -77,11 +121,13 @@ func New(option Option) *gin.Engine {
 	auth.POST("/Login", handlerV1.Login)
 
 	//suAdmin
-	//suAdmin := api.Group("suAdmin")
-	//suAdmin.GET("/roles", option.ListRoles())
-	//suAdmin.DELETE("/:role", option.DeleteRole())
-	//suAdmin.POST("/add-user-role", option.AddPolicy())
-	//suAdmin.POST("/up_role", handlerV1.UpdateRole)
+	suAdmin := api.Group("suAdmin")
+	suAdmin.GET("/roles", option.ListRoles())
+	suAdmin.DELETE("/:role", option.DeleteRole())
+	suAdmin.POST("/add-user-role", option.AddPolicy())
+	suAdmin.POST("/up_role", handlerV1.UpdateRole)
+	suAdmin.GET("/get_all_users", handlerV1.AdGetAllUsers)
+	suAdmin.DELETE("/delete_user", handlerV1.DeleteUser)
 
 	//user
 	user := api.Group("/user")
@@ -91,7 +137,7 @@ func New(option Option) *gin.Engine {
 	user.GET("/get_all_users", handlerV1.GetAllUsers)
 
 	//post
-	post := api.Group("/post")
+	post := user.Group("/post")
 	post.POST("/create", handlerV1.CreatePost)
 	post.GET("/get_post", handlerV1.GetPost)
 	post.POST("/search_post", handlerV1.SearchPost)
@@ -101,6 +147,15 @@ func New(option Option) *gin.Engine {
 	post.DELETE("/delete_post", handlerV1.DeletePost)
 	post.POST("/click_like", handlerV1.ClickLike)
 	post.POST("/click_dislike", handlerV1.ClickDisLike)
+
+	//comment
+	comm := user.Group("/comment")
+	comm.POST("/create", handlerV1.CreateComment)
+	comm.GET("/get_comm_by_post_id", handlerV1.GetCommentsByPostId)
+	comm.GET("/get_comm_by_owner_id", handlerV1.GetCommentsByOwnerId)
+	comm.PUT("/update", handlerV1.UpdateComment)
+	comm.DELETE("/delete", handlerV1.DeleteComment)
+	comm.POST("/click_like", handlerV1.CommentClickLike)
 
 	url := ginSwagger.URL("swagger/doc.json")
 	api.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

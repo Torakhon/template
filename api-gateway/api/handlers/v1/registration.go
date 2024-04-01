@@ -7,7 +7,6 @@ import (
 	l "api-gateway/pkg/logger"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
@@ -41,7 +40,7 @@ func (h *HandlerV1) Register(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&body)
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
+		Addr: "redisdb:6379",
 	})
 
 	if err != nil {
@@ -124,7 +123,7 @@ func (h *HandlerV1) Authorization(c *gin.Context) {
 	err := c.ShouldBindJSON(&body)
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
+		Addr: "redisdb:6379",
 	})
 	defer func(rdb *redis.Client) {
 		err := rdb.Close()
@@ -181,7 +180,6 @@ func (h *HandlerV1) Authorization(c *gin.Context) {
 			h.log.Error(err.Error())
 			return
 		}
-		fmt.Println(regis)
 		_, err = h.serviceManager.UserService().CreateUser(ctx, &pbu.CreateUserReq{
 			Id:        regis.Id,
 			UserName:  regis.UserName,
